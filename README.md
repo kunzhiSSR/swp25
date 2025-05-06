@@ -4,7 +4,7 @@ This is the frontend project for the quantum encoding benchmark interface.
 
 ✳️ Umsetzungshinweise: Aufgabenbereiche 2.1–2.4
 
-Die Seiten und Komponenten dieses Projekts sind in den Ordnern src/pages/ und src/components/ organisiert. Im Folgenden wird erklärt, wo jede Teilfunktion implementiert werden soll und wie.
+Die Seiten und Komponenten dieses Projekts sind in den Ordnern src/pages/ und src/components/ organisiert. Im Folgenden wird erklärt, wo jede Teilfunktion implementiert werden soll .
 ✅ 2.1 Upload und Visualisierung von Kodierungen
 
 📁 Datei: src/pages/UploadPage.jsx
@@ -71,22 +71,4 @@ Die Seiten und Komponenten dieses Projekts sind in den Ordnern src/pages/ und sr
     Optional: Hochladen eines JSON zur Wiederherstellung im Editor.
 
 
-src/
-├── App.jsx
-├── main.jsx
-├── index.css
-├── pages/
-│   ├── UploadPage.jsx             ← 2.1
-│   ├── BenchmarkOverview.jsx      ← 2.2
-│   ├── EvaluationResult.jsx       ← 2.3
-│   └── CircuitBuilder.jsx         ← 2.4
-├── components/
-│   ├── Navbar.jsx
-│   ├──         
-│   ├──     
-│   ├──           
-│   ├──            
-│   ├──       
-│             
-└── utils/
-    └── api.js
+
