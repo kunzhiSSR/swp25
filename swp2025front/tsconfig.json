@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".", // 这里必须有
+        "paths": {
+            "@/*": [
+                "src/*"
+            ] // 路径别名，让 @ 指向 src
+        },
+        "jsx": "react-jsx", // 若已有更完整的 tsconfig，可忽略这一行
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "target": "ESNext"
+    },
+    "include": [
+        "src"
+    ]
+}

@@ -6,23 +6,28 @@ import UploadPage from "./pages/UploadPage";
 import BenchmarkOverview from "./pages/BenchmarkOverview";
 import EvaluationResult from "./pages/EvaluationResult";
 import CircuitBuilder from "./pages/CircuitBuilder";
+import { CircuitProvider } from '@/contexts/CircuitContext';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+    <DndProvider backend={HTML5Backend}>
+      <CircuitProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50">
+            <Navbar />
 
-        <main className="p-6">
-          <Routes>
-            <Route path="/" element={<UploadPage />} />
-            <Route path="/benchmark" element={<BenchmarkOverview />} />
-            <Route path="/results" element={<EvaluationResult />} />
-            <Route path="/builder" element={<CircuitBuilder />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+            <main className="p-6">
+              <Routes>
+                <Route path="/" element={<UploadPage />} />
+                <Route path="/benchmark" element={<BenchmarkOverview />} />
+                <Route path="/results" element={<EvaluationResult />} />
+                <Route path="/builder" element={<CircuitBuilder />} />
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </CircuitProvider>
+    </DndProvider>
   );
 }
 
