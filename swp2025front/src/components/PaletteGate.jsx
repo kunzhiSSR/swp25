@@ -1,23 +1,18 @@
 // src/components/PaletteGate.jsx
 import { useDrag } from 'react-dnd';
-
 export const ItemTypes = { GATE: 'gate' };
 
 export default function PaletteGate({ label }) {
-    /* useDrag 返回 [ collectedProps, dragRef ] */
     const [{ isDragging }, dragRef] = useDrag(() => ({
         type: ItemTypes.GATE,
-        item: { type: label },          // 拖拽时携带的数据（门类型）
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
+        item: { type: label },
+        collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     }), [label]);
 
     return (
         <div
             ref={dragRef}
-            className={`bg-gray-200 rounded px-2 py-1 text-center cursor-move select-none
-                  ${isDragging ? 'opacity-50' : ''}`}
+            className={`w-28 py-2 text-center rounded ${isDragging ? 'opacity-40' : 'bg-gray-200'}`}
         >
             {label}
         </div>

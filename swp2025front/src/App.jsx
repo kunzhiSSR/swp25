@@ -4,6 +4,7 @@ import QuantumCircuitBuilder from './pages/QuantumCircuitBuilder';
 import UploadPage from './pages/UploadPage';
 import BenchmarkOverview from './pages/BenchmarkOverview';
 import EvaluationResult from './pages/EvaluationResult';
+import { CircuitProvider } from '@/contexts/CircuitContext';
 
 export default function App() {
   return (

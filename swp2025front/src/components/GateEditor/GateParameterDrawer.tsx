@@ -1,85 +1,192 @@
-import { useState, useEffect } from "react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "@/components/ui/drawer";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { useCircuitStore } from "@/stores/useCircuitStore";
+// import { useState, useEffect } from 'react';
+// import {
+//   Drawer,
+//   DrawerContent,
+//   DrawerHeader,
+//   DrawerTitle,
+//   DrawerFooter,
+//   DrawerClose,
+// } from '@/components/ui/drawer';
+// import { Label } from '@/components/ui/label';
+// import { Input } from '@/components/ui/input';
+// import { Slider } from '@/components/ui/slider';
+// import { Button } from '@/components/ui/button';
 
-/**
- * Props
- * gateId   – 唯一 gate.id
- * open     – 控制抽屉显隐
- * onClose  – 关闭回调（父组件控制 open 状态）
- */
-interface GateParameterDrawerProps {
-    gateId: string | null;
-    open: boolean;
-    onClose: () => void;
+// interface Gate {
+//   id: string;
+//   type: string;
+//   params?: number[];
+// }
+
+// interface Props {
+//   gate: Gate | null;
+//   open: boolean;
+//   onClose: () => void;
+//   onSave: (theta: number) => void;
+// }
+
+// export default function GateParameterDrawer({
+//   gate,
+//   open,
+//   onClose,
+//   onSave,
+// }: Props) {
+//   const [theta, setTheta] = useState(0);
+
+//   /* 当切换不同 gate 时，重置 θ */
+//   useEffect(() => {
+//     setTheta(gate?.params?.[0] ?? 0);
+//   }, [gate?.id]);
+
+//   if (!gate) return null;
+
+//   return (
+//     <Drawer open={open} onOpenChange={onClose}>
+//       {/* DrawerContent 默认贴边展开；这里限制宽度并居中视觉 */}
+//       <DrawerContent className="max-w-sm mx-auto rounded-t-lg p-6 space-y-6">
+//         <DrawerHeader>
+//           <DrawerTitle className="text-lg font-semibold">
+//             {gate.type} — θ (radians)
+//           </DrawerTitle>
+//         </DrawerHeader>
+
+//         {/* 输入区域 */}
+//         <div className="space-y-4">
+//           <div className="space-y-1">
+//             <Label htmlFor="theta-input">θ 数值</Label>
+//             <Input
+//               id="theta-input"
+//               type="number"
+//               step="0.01"
+//               value={theta}
+//               onChange={(e) => setTheta(parseFloat(e.target.value))}
+//             />
+//           </div>
+
+//           <Slider
+//             min={-Math.PI}
+//             max={Math.PI}
+//             step={0.01}
+//             value={[theta]}
+//             onValueChange={([v]) => setTheta(v)}
+//             className="w-full"
+//           />
+//         </div>
+
+//         <DrawerFooter className="pt-2">
+//           <Button variant="secondary" onClick={onClose}>
+//             Cancel
+//           </Button>
+//           <Button
+//             onClick={() => {
+//               onSave(theta);
+//               onClose();
+//             }}
+//           >
+//             Save
+//           </Button>
+//         </DrawerFooter>
+
+//         {/* 隐藏默认右上角 × 按钮（DrawerClose 默认渲染） */}
+//         <DrawerClose className="hidden" />
+//       </DrawerContent>
+//     </Drawer>
+//   );
+// }
+
+
+
+import { useState, useEffect } from 'react';
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerFooter,
+    DrawerClose,
+} from '@/components/ui/drawer';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
+
+interface Gate {
+    id: string;
+    type: string;
+    params?: number[];
 }
 
-/**
- * <GateParameterDrawer />
- *
- * 显示并编辑参数化门（Rx/Ry/Rz）的参数 θ。
- * 参数存储在 Zustand store -> circuit.gates[].params[0]
- */
-export default function GateParameterDrawer({ gateId, open, onClose }: GateParameterDrawerProps) {
-    const gate = useCircuitStore((s) => s.circuit.gates.find((g) => g.id === gateId));
-    const updateGate = useCircuitStore((s) => s.updateGate);
+interface Props {
+    gate: Gate | null;
+    open: boolean;
+    onClose: () => void;
+    onSave: (theta: number) => void;
+}
 
-    // 本地状态（防止未保存前直接写入全局）
+export default function GateParameterDrawer({
+    gate,
+    open,
+    onClose,
+    onSave,
+}: Props) {
+    const [theta, setTheta] = useState(0);
 
-    const [theta, setTheta] = useState<number>(gate?.params?.[0] ?? 0);
-
-    // 当 gateId 变化时，刷新本地状态
+    /* 当切换不同 gate 时，重置 θ */
     useEffect(() => {
-        if (gate) {
-            setTheta(gate.params?.[0] ?? 0);
-        }
-    }, [gateId]);
+        setTheta(gate?.params?.[0] ?? 0);
+    }, [gate?.id]);
 
-    if (!gate) return null; // 容错
-
-    // 参数保存
-    const handleSave = () => {
-        updateGate(gate.id, { params: [theta] });
-        onClose();
-    };
+    if (!gate) return null;
 
     return (
         <Drawer open={open} onOpenChange={onClose}>
-            <DrawerContent className="max-w-md mx-auto p-6 space-y-4">
+            {/* DrawerContent 默认贴边展开；这里限制宽度并居中视觉 */}
+            <DrawerContent className="max-w-sm mx-auto rounded-t-lg p-6 space-y-6">
                 <DrawerHeader>
-                    <DrawerTitle className="text-xl font-semibold">
-                        Edit Parameters – {gate.type}
+                    <DrawerTitle className="text-lg font-semibold">
+                        {gate.type} — θ (radians)
                     </DrawerTitle>
                 </DrawerHeader>
 
-                <div className="space-y-2">
-                    <Label htmlFor="theta">θ (radians)</Label>
-                    <Input
-                        id="theta"
-                        type="number"
-                        step="0.01"
-                        value={theta}
-                        onChange={(e) => setTheta(parseFloat(e.target.value))}
-                    />
+                {/* 输入区域 */}
+                <div className="space-y-4">
+                    <div className="space-y-1">
+                        <Label htmlFor="theta-input">θ 数值</Label>
+                        <Input
+                            id="theta-input"
+                            type="number"
+                            step="0.01"
+                            value={theta}
+                            onChange={(e) => setTheta(parseFloat(e.target.value))}
+                        />
+                    </div>
+
                     <Slider
                         min={-Math.PI}
                         max={Math.PI}
                         step={0.01}
                         value={[theta]}
-                        onValueChange={([value]) => setTheta(value)}
+                        onValueChange={([v]) => setTheta(v)}
+                        className="w-full"
                     />
                 </div>
 
-                <DrawerFooter className="pt-4 flex justify-end space-x-2">
+                <DrawerFooter className="pt-2">
                     <Button variant="secondary" onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSave}>Save</Button>
+                    <Button
+                        onClick={() => {
+                            onSave(theta);
+                            onClose();
+                        }}
+                    >
+                        Save
+                    </Button>
                 </DrawerFooter>
+
+                {/* 隐藏默认右上角 × 按钮（DrawerClose 默认渲染） */}
+                <DrawerClose className="hidden" />
             </DrawerContent>
         </Drawer>
     );

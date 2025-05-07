@@ -17,16 +17,26 @@ export default function Toolbar() {
         URL.revokeObjectURL(url);
     };
 
-    /** 调后端 /simulate_custom_circuit 并把结果打印/提示 */
+    // Toolbar.jsx
     const handleBenchmark = async () => {
-        const res = await fetch('http://localhost:8000/simulate_custom_circuit', {
+        const res = await fetch('http://127.0.0.1:8000/simulate_custom_circuit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(exportCircuit()),
+        }).catch(err => {
+            alert('无法连接后端：' + err.message);
+            throw err;
         });
+
+        if (!res.ok) {
+            const txt = await res.text();
+            alert(`后端错误 ${res.status}:\n${txt}`);
+            return;
+        }
         const data = await res.json();
-        alert(`Accuracy: ${data.accuracy}\nDepth: ${data.depth}\nTime: ${data.simulation_time}s`);
+        alert(JSON.stringify(data, null, 2));
     };
+
 
     return (
         <div className="flex gap-2 mb-4">
