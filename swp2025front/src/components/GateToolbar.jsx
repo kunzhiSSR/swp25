@@ -1,47 +1,83 @@
-// src/components/GateToolbar.jsx
-import React from 'react';
-import {
-    Edit2,
-    Info,
-    Crop,
-    Scissors,
-    Copy,
-    Trash2,
-} from 'lucide-react';
+// // src/components/GateToolbar.jsx
+// import {
+//     PiPencil,
+//     PiInfo,
+//     PiMagnifyingGlassPlus,
+//     PiScissors,
+//     PiCopy,
+//     PiTrash,
+// } from "react-icons/pi";
 
-export default function GateToolbar({
-    x,                      // x 坐标（px）
-    y,                      // y 坐标（px）
-    onEdit,
-    onInfo,
-    onCrop,
-    onCut,
-    onCopy,
-    onDelete,
-}) {
+// /**
+//  * @param {object} props
+//  * @param {boolean} props.visible 是否显示
+//  * @param {number}  props.x       绝对定位 left
+//  * @param {number}  props.y       绝对定位 top
+//  * @param {() => void} props.onEdit
+//  * @param {() => void} props.onDelete
+//  */
+// export default function GateToolbar({ visible, x, y, onEdit, onDelete }) {
+//     if (!visible) return null;
+
+//     return (
+//         <div
+//             className="absolute flex gap-1 bg-white/80 backdrop-blur-sm border
+//                  rounded-md p-1 shadow"
+//             style={{ top: y, left: x }}
+//         >
+//             <IconBtn Icon={PiPencil} title="Edit" onClick={onEdit} />
+//             <IconBtn Icon={PiInfo} title="Info" onClick={() => { }} />
+//             <IconBtn Icon={PiMagnifyingGlassPlus} title="Zoom" onClick={() => { }} />
+//             <IconBtn Icon={PiScissors} title="Cut" onClick={() => { }} />
+//             <IconBtn Icon={PiCopy} title="Copy" onClick={() => { }} />
+//             <IconBtn Icon={PiTrash} title="Delete" onClick={onDelete} />
+//         </div>
+//     );
+// }
+
+// function IconBtn({ Icon, title, onClick }) {
+//     return (
+//         <button
+//             type="button"
+//             title={title}
+//             onClick={onClick}
+//             className="w-6 h-6 grid place-items-center hover:bg-gray-100 rounded"
+//         >
+//             <Icon className="text-[14px]" />
+//         </button>
+//     );
+// }
+
+
+import React from "react";
+import { PiPencil, PiTrash, PiCopy } from "react-icons/pi";
+
+export default function GateToolbar({ visible, x, y, onEdit, onDelete }) {
+    if (!visible) return null;
+
     return (
         <div
-            className="absolute flex items-center space-x-1 bg-white border border-gray-200 rounded-md shadow-lg p-1 z-50"
-            style={{ top: y, left: x }}
+            className="absolute inline-flex items-center gap-1
+                 bg-black/90 backdrop-blur-sm shadow-md rounded-md
+                 px-1.5 py-0.5 z-30"
+            style={{ left: x, top: y }}
         >
-            <button onClick={onEdit} title="Edit">
-                <Edit2 size={16} />
-            </button>
-            <button onClick={onInfo} title="Info">
-                <Info size={16} />
-            </button>
-            <button onClick={onCrop} title="Crop">
-                <Crop size={16} />
-            </button>
-            <button onClick={onCut} title="Cut">
-                <Scissors size={16} />
-            </button>
-            <button onClick={onCopy} title="Copy">
-                <Copy size={16} />
-            </button>
-            <button onClick={onDelete} title="Delete">
-                <Trash2 size={16} />
-            </button>
+            <IconBtn Icon={PiPencil} onClick={onEdit} tip="Edit" />
+            <IconBtn Icon={PiCopy} onClick={() => navigator.clipboard.writeText('')} tip="Copy" />
+            <IconBtn Icon={PiTrash} onClick={onDelete} tip="Delete" className="text-red-500" />
         </div>
+    );
+}
+
+/* 小图标按钮 */
+function IconBtn({ Icon, onClick, tip, className = "" }) {
+    return (
+        <button
+            onClick={onClick}
+            title={tip}
+            className={`w-5 h-5 flex items-center justify-center hover:bg-slate-200 rounded ${className}`}
+        >
+            <Icon size={14} />
+        </button>
     );
 }

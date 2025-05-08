@@ -19,8 +19,8 @@ function App() {
             <main className="p-6">
               <Routes>
                 <Route path="/" element={<UploadPage />} />
-                <Route path="/benchmark" element={<BenchmarkOverview />} />
-                <Route path="/results" element={<EvaluationResult />} />
+                <Route path="/overview" element={<BenchmarkOverview />} />
+                <Route path="/result" element={<EvaluationResult />} />
                 <Route path="/builder" element={<CircuitBuilder />} />
               </Routes>
             </main>

@@ -42,14 +42,14 @@ export default function Toolbar() {
         <div className="flex gap-2 mb-4">
             <button
                 onClick={handleExport}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 rounded text-sm text-black"
             >
                 Export JSON
             </button>
 
             <button
                 onClick={handleBenchmark}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 rounded text-sm ml-2 text-black"
             >
                 Run Benchmark
             </button>
