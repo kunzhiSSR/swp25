@@ -6,6 +6,7 @@ const links = [
   { to: '/overview', label: 'BenchmarkOverview' },
   { to: '/result', label: 'EvaluationsResult' },
   { to: '/builder', label: 'CircuitBuilder' },
+  { to: '/quantum-encoding', label: 'Quantum Encoding' },
 ];
 
 export default function Navbar() {

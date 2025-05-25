@@ -1,4 +1,3 @@
-
 // import { useState } from 'react';
 // import PaletteGate from '@/components/PaletteGate.jsx';
 // import { GATE_DEFS } from '@/constants/gates';
@@ -50,33 +49,29 @@
 // }
 
 // src/components/GatePalette.jsx
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import PaletteGate from '@/components/PaletteGate.jsx';
 import { GATE_DEFS } from '@/constants/gates';
 
-const colors = {
-    foundation: 'bg-red-600',
-    rotation: 'bg-pink-600',
-    entangle: 'bg-blue-600',
+// 修改量子门的颜色映射，使用与图片一致的颜色
+const gateColors = {
+    H: 'bg-blue-500',
+    X: 'bg-red-500',
+    Y: 'bg-orange-500',
+    Z: 'bg-purple-500',
+    RX: 'bg-green-500',
+    RY: 'bg-teal-500',
+    RZ: 'bg-blue-600',
+    CNOT: 'bg-indigo-500',
+    CZ: 'bg-purple-600',
+    SWAP: 'bg-pink-500'
 };
 
-const GATES = Object.entries(GATE_DEFS).map(([value, def]) => ({
-    value,
-    label: def.label,
-    category: def.category,
-    color: colors[def.category] || 'bg-gray-500',
-}));
+// 悬浮提示组件
+const GateInfoTooltip = ({ gate, onClose }) => {
+    if (!gate) return null;
 
-export default function GatePalette({ className = '' }) {
-    const [searchKey, setSearchKey] = useState('');
-    const [selectedGate, setSelectedGate] = useState(null);
-
-    // Filter gates by search keyword
-    const filtered = GATES.filter(g =>
-        g.label.toLowerCase().includes(searchKey.toLowerCase())
-    );
-
-    // Detailed info for each gate in English
+    // 每个门的详细信息
     const GATE_INFO = {
         H: {
             title: 'Hadamard Gate (H)',
@@ -140,65 +135,106 @@ export default function GatePalette({ className = '' }) {
         },
     };
 
-    return (
-        <div className={`flex flex-col p-4 border-r bg-white ${className}`}>
-            {/* Search Input */}
-            <input
-                type="text"
-                placeholder="Search gates..."
-                className="mb-4 w-full rounded border px-3 py-2 text-sm"
-                value={searchKey}
-                onChange={e => setSearchKey(e.target.value)}
-            />
+    const info = GATE_INFO[gate];
+    if (!info) return null;
 
-            {/* Gate Grid */}
-            <div className="grid grid-cols-2 gap-3">
-                {filtered.map(g => (
-                    <PaletteGate
-                        key={g.value}
-                        value={g.value}
-                        label={g.label}
-                        className={`
-              ${g.color}
-              w-full py-3 rounded
-              text-lg font-semibold text-center
-              ${selectedGate === g.value ? 'ring-2 ring-indigo-500' : ''}
-            `}
-                        onClick={() =>
-                            setSelectedGate(prev => (prev === g.value ? null : g.value))
-                        }
-                    />
+    return (
+        <div className="bg-white border border-gray-300 rounded-md shadow-lg p-3 z-50 w-64">
+            <div className="flex justify-between items-center mb-2">
+                <h3 className="text-base font-semibold text-black">{info.title}</h3>
+                <button
+                    onClick={onClose}
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none text-lg leading-none"
+                >
+                    ×
+                </button>
+            </div>
+            <p className="text-sm mb-3 text-black">{info.description}</p>
+            <div className="text-xs text-black mb-1">
+                <strong>Usage:</strong> {info.usage}
+            </div>
+            <a
+                href={info.reference}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 underline"
+            >
+                More info
+            </a>
+        </div>
+    );
+};
+
+export default function GatePalette({ className = '' }) {
+    const [selectedGate, setSelectedGate] = useState(null);
+    const containerRef = useRef(null);
+
+    // 处理点击门事件
+    const handleGateClick = (e) => {
+        const gate = e.currentTarget.dataset.type;
+        if (!gate) return;
+
+        // 如果点击了当前选中的门，则取消选择
+        if (selectedGate === gate) {
+            setSelectedGate(null);
+        } else {
+            setSelectedGate(gate);
+        }
+    };
+
+    // 点击其他区域关闭悬浮窗
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (selectedGate &&
+                containerRef.current &&
+                !event.target.closest('.gate-info-tooltip') &&
+                !event.target.closest('[data-type]')) {
+                setSelectedGate(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [selectedGate]);
+
+    // 从GATE_DEFS获取所有门
+    const gates = Object.entries(GATE_DEFS).map(([value, def]) => ({
+        value,
+        label: def.label
+    }));
+
+    return (
+        <div className={`flex flex-col p-2 relative ${className}`} ref={containerRef}>
+            {/* 门网格 - 使用grid布局 */}
+            <div className="grid grid-cols-2 gap-4">
+                {gates.map(gate => (
+                    <div key={gate.value} className="flex flex-col items-center">
+                        {/* 每个门的容器 - 添加白色背景和边框 */}
+                        <div className="w-full bg-white border border-gray-200 rounded-md p-2 flex flex-col items-center">
+                            <PaletteGate
+                                value={gate.value}
+                                label={gate.value}
+                                className={`${gateColors[gate.value]} w-12 h-12 flex items-center justify-center rounded-md shadow-sm text-white`}
+                                onClick={handleGateClick}
+                            />
+                            {/* 门的名称标签 */}
+                            <div className="mt-1 text-xs text-gray-700">{gate.value}</div>
+                        </div>
+                    </div>
                 ))}
             </div>
 
-            {/* Details Panel */}
-            <div className="mt-6 p-4 border-t bg-gray-50 min-h-[6rem]">
-                {selectedGate && GATE_INFO[selectedGate] ? (
-                    <>
-                        <h3 className="text-base font-semibold mb-2 text-black">
-                            {GATE_INFO[selectedGate].title}
-                        </h3>
-                        <p className="text-sm mb-3 text-black">
-                            {GATE_INFO[selectedGate].description}
-                        </p>
-                        <div className="text-xs text-black mb-1">
-                            <strong>Usage:</strong> {GATE_INFO[selectedGate].usage}
-                        </div>
-                        <a
-                            href={GATE_INFO[selectedGate].reference}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-600 underline"
-                        >
-                            More info
-                        </a>
-                    </>
-                ) : (
-                    <p className="text-sm text-gray-500">
-                        Click a gate on the left to view its details.
-                    </p>
-                )}
-            </div>
+            {/* 中央悬浮窗 - 使用绝对定位并覆盖整个区域 */}
+            {selectedGate && (
+                <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-5 z-50 gate-info-tooltip">
+                    <GateInfoTooltip
+                        gate={selectedGate}
+                        onClose={() => setSelectedGate(null)}
+                    />
+                </div>
+            )}
         </div>
     );
 }
