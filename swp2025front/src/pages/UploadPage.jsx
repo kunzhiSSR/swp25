@@ -36,11 +36,10 @@ export default function UploadPage() {
             <span className="inline-block px-9 py-2 p-2 bg-black text-white rounded-md cursor-pointer font-semibold text-base transition hover:bg-gray-800">
               Datei auswählen
             </span>
-          </label>
+          </label>œ
           <div className="text-xs text-gray-500 mb-4 text-center">
             Ziehen Sie Ihre JSON-Datei hierher oder klicken Sie zum Auswählen
           </div>
-
         </div>
         {/* 错误提示 */}
         {error && <div className="text-red-600 text-center mb-2 font-medium">{error}</div>}
