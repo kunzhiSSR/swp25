@@ -1,13 +1,20 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation
+} from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 
 import UploadPage from "./pages/UploadPage";
 import BenchmarkOverview from "./pages/BenchmarkOverview";
 import EvaluationResult from "./pages/EvaluationResult";
 import CircuitBuilder from "./pages/CircuitBuilder";
-import { CircuitProvider } from '@/contexts/CircuitContext';
+import { CircuitProvider } from "@/contexts/CircuitContext";
 
+// Sidebar 组件
 const Sidebar = () => {
   const { pathname } = useLocation();
 
@@ -21,22 +28,39 @@ const Sidebar = () => {
           </button>
         </div>
         <nav className="space-y-4 mt-4">
-          <Link to="/dashboard" className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${pathname === '/dashboard' ? 'bg-gray-800' : ''}`}>
-            Dashboard
-          </Link>
-          <Link to="/upload" className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${pathname === '/upload' ? 'bg-gray-800' : ''}`}>
+          <Link
+            to="/upload"
+            className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${
+              pathname === "/upload" ? "bg-gray-800" : ""
+            }`}
+          >
             <span className="text-xl">↑</span>
             Upload
           </Link>
-          <Link to="/benchmark" className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${pathname === '/benchmark' ? 'bg-gray-800' : ''}`}>
+          <Link
+            to="/benchmark"
+            className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${
+              pathname === "/benchmark" ? "bg-gray-800" : ""
+            }`}
+          >
             Benchmark-Komponenten
           </Link>
-          <Link to="/visual-editor" className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${pathname === '/visual-editor' ? 'bg-gray-800' : ''}`}>
+          <Link
+            to="/results"
+            className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${
+              pathname === "/results" ? "bg-gray-800" : ""
+            }`}
+          >
+            Ergebnisse
+          </Link>
+          <Link
+            to="/visual-editor"
+            className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${
+              pathname === "/visual-editor" ? "bg-gray-800" : ""
+            }`}
+          >
             <span className="text-xl">✎</span>
             Visual Editor
-          </Link>
-          <Link to="/results" className={`flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg ${pathname === '/results' ? 'bg-gray-800' : ''}`}>
-            Ergebnisse
           </Link>
         </nav>
       </div>
@@ -44,6 +68,7 @@ const Sidebar = () => {
   );
 };
 
+// 主组件
 function App() {
   return (
     <CircuitProvider>
@@ -52,11 +77,10 @@ function App() {
           <Sidebar />
           <main className="flex-1 p-6">
             <Routes>
-              <Route path="/dashboard" element={<BenchmarkOverview />} />
               <Route path="/upload" element={<UploadPage />} />
               <Route path="/benchmark" element={<BenchmarkOverview />} />
-              <Route path="/visual-editor" element={<CircuitBuilder />} />
               <Route path="/results" element={<EvaluationResult />} />
+              <Route path="/visual-editor" element={<CircuitBuilder />} />
               <Route path="/" element={<BenchmarkOverview />} />
             </Routes>
           </main>
