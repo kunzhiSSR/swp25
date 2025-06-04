@@ -178,8 +178,9 @@ import { ItemTypes } from '@/components/PaletteGate';
 import { useCircuit } from '@/contexts/CircuitContext';
 import { GATE_DEFS, PARAM_GATES } from '@/constants/gates';
 
-export const GRID = 70; // 增加网格大小，使电路图分割更大
+export const GRID = 80; // Changed from 70 to 80 to match time step header width (w-20)
 const MAX_COLS = 9; // 减少列数，使电路图更短
+const QUBIT_LABEL_COLUMN_WIDTH = 64; // Width for "qX:" labels (w-12 + mr-4)
 
 export default function CircuitCanvas({ onSelectGate }) {
     const cvsRef = useRef(null);
@@ -339,7 +340,7 @@ export default function CircuitCanvas({ onSelectGate }) {
                             className="absolute left-0 flex items-center w-full"
                             style={{ top: r * GRID + GRID / 2 }}
                         >
-                            <span className="mr-4 select-none text-base font-medium text-gray-600 w-12 text-right">
+                            <span className="mr-3 select-none text-base font-medium text-gray-600 w-12 text-right">
                                 {`q${r}:`}
                             </span>
                             <div className="flex-1 border-t-2 border-gray-400" />
@@ -351,7 +352,7 @@ export default function CircuitCanvas({ onSelectGate }) {
                         <div
                             className="pointer-events-none absolute rounded border-2 border-blue-500/50 bg-blue-300/20"
                             style={{
-                                left: hover.col * GRID + 50, // 为量子比特标签留出更多空间
+                                left: QUBIT_LABEL_COLUMN_WIDTH + hover.col * GRID, // Position after qubit labels
                                 top: hover.row * GRID,
                                 width: GRID,
                                 height: GRID,
@@ -363,7 +364,7 @@ export default function CircuitCanvas({ onSelectGate }) {
                     {circuit.gates.map(g => (
                         <Gate
                             key={g.id}
-                            gate={{ ...g, timeStep: g.timeStep + 1 }} // 为量子比特标签偏移timeStep
+                            gate={g} // Pass original timeStep (should be 0-indexed for t0)
                             onSelect={selectGate}
                         />
                     ))}

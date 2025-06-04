@@ -9,6 +9,21 @@ const DOT_SIZE = 10;   // 控制点尺寸增大
 const PLUS_SIZE = 32;  // 目标圆直径增大
 const LINE_WIDTH = 3;   // 竖线粗细增加
 
+// Define fixed widths for elements based on Tailwind classes if possible, or measure them.
+// Assuming w-12 for gate is 3rem = 48px if 1rem = 16px.
+const GATE_WIDTH = 48;
+const GATE_HEIGHT = 48;
+const PARAM_BOX_WIDTH = 100; // Given fixed width in style
+const PARAM_BOX_SPACING_TOP = 8; // Desired spacing below the gate
+
+// This offset accounts for the column of qubit labels (e.g., "q0:", "q1:") AND
+// the parent padding/margins of the Time Step ID row (t0, t1...).
+// Calculation based on CircuitCanvas.jsx header:
+// Header padding: px-4 (1rem = 16px if root is 16px)
+// ID column: w-16 (4rem = 64px) + mr-1 (0.25rem = 4px)
+// Total offset for t0 column start = 16 + 64 + 4 = 84px.
+const ROW_LABEL_COLUMN_WIDTH = 84;
+
 // 为不同类型的门设置不同的颜色
 const gateColors = {
     H: 'bg-blue-500 border-blue-600',
@@ -51,7 +66,8 @@ function Gate({ gate, onSelect, readOnly = false }) {
     /* ─── 受控门（CNOT / CZ / …） ─── */
     if (gate.control?.length) {
         const [targetRow] = gate.target;
-        const x = gate.timeStep * GRID + GRID / 2;
+        // Calculate center X for the vertical line, accounting for the row label column
+        const x = ROW_LABEL_COLUMN_WIDTH + gate.timeStep * GRID + GRID / 2;
 
         const minRow = Math.min(...gate.control, targetRow);
         const maxRow = Math.max(...gate.control, targetRow);
@@ -113,8 +129,8 @@ function Gate({ gate, onSelect, readOnly = false }) {
     /* ─── 单量子门 ─── */
     const colorClasses = gateColors[gate.type] || 'bg-gray-500 border-gray-600';
     const rectStyle = {
-        left: gate.timeStep * GRID + 4,
-        top: gate.target[0] * GRID + GRID / 2 - 16,
+        left: ROW_LABEL_COLUMN_WIDTH + gate.timeStep * GRID + (GRID - GATE_WIDTH) / 2,
+        top: gate.target[0] * GRID + (GRID - GATE_HEIGHT) / 2,
     };
 
     // 检查门是否有参数
@@ -144,9 +160,9 @@ function Gate({ gate, onSelect, readOnly = false }) {
                 <div
                     className="absolute z-20 bg-white px-4 py-1.5 rounded-md border border-gray-400 text-xs font-medium text-gray-800 shadow-sm"
                     style={{
-                        left: gate.timeStep * GRID + 3, // 门的左侧位置
-                        top: gate.target[0] * GRID + GRID / 2 + 50, // 门的下方
-                        width: '100px',
+                        left: ROW_LABEL_COLUMN_WIDTH + gate.timeStep * GRID + (GRID - PARAM_BOX_WIDTH) / 2, // Center param box in grid cell
+                        top: (gate.target[0] * GRID + (GRID - GATE_HEIGHT) / 2) + GATE_HEIGHT + PARAM_BOX_SPACING_TOP, // Position below the gate
+                        width: `${PARAM_BOX_WIDTH}px`,
                         textAlign: 'center'
                     }}
                 >

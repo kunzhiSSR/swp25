@@ -171,7 +171,7 @@
 //   );
 // }
 // src/pages/QuantumCircuitBuilder.jsx
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Code, Play, Save, Edit } from 'lucide-react';
@@ -307,11 +307,15 @@ const GateProperties = ({ selectedGate, updateGateParam }) => {
 };
 
 export default function QuantumCircuitBuilder() {
-  const { exportCircuit, updateGate } = useCircuit();
+  const { circuit, exportCircuit, updateGate, setQubits: setGlobalQubits } = useCircuit();
   const [encodingName, setEncodingName] = useState('Amplitude Encoding');
-  const [qubits, setQubits] = useState('4 Qubits');
+  const [localQubitsString, setLocalQubitsString] = useState(`${circuit.qubits} Qubits`);
   const [selectedGate, setSelectedGate] = useState(null);
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    setLocalQubitsString(`${circuit.qubits} Qubits`);
+  }, [circuit.qubits]);
 
   // 更新门参数的函数
   const updateGateParam = (paramIndex, value) => {
@@ -412,8 +416,15 @@ export default function QuantumCircuitBuilder() {
                 <div>
                   <label className="block text-xs text-gray-500 mb-1">Anzahl Qubits</label>
                   <select
-                    value={qubits}
-                    onChange={(e) => setQubits(e.target.value)}
+                    value={localQubitsString}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value;
+                      setLocalQubitsString(selectedValue);
+                      const numQubits = parseInt(selectedValue.split(' ')[0], 10);
+                      if (!isNaN(numQubits)) {
+                        setGlobalQubits(numQubits);
+                      }
+                    }}
                     className="w-full border rounded-md px-2 py-1 text-sm appearance-none bg-white text-gray-800"
                   >
                     <option>4 Qubits</option>
